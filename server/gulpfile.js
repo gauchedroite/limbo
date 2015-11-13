@@ -46,7 +46,7 @@ gulp.task("watch", function () {
 });
 
 
-// Doesn't work as I was expecting.
+// Doesn't work as expected.
 // The output files get created multiple times in multiple folders...
-//gulp.task("buildAll", [/*"buildServer",*/ "buildSrc", "buildTests"]);
+//gulp.task("buildAll", ["buildServer", "buildSrc", "buildTests"]);
 
