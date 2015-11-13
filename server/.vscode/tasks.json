@@ -1,0 +1,40 @@
+//
+// A task runner configuration for gulp. 
+// gulpfile.js provides a 'scripts' task which compiles ts to js.
+//
+// To get the tasks defined in gulpfile.ts to show up in the palette's Run Task list
+// tasks.json need the command below to be defined:
+//
+{
+    "version": "0.1.0",
+    "command": "gulp",
+    "isShellCommand": true,
+    "tasks": [
+        {
+            "taskName": "buildServer",
+            "problemMatcher": "$tsc",
+            "isBuildCommand": true
+        },
+        {
+            "taskName": "buildSrc",
+            "problemMatcher": "$tsc"
+        },
+        {
+            "taskName": "test",
+            "args": [],
+            "isTestCommand": true
+        },
+        {
+            "taskName": "buildTests",
+            "problemMatcher": "$tsc"
+        },
+        //{
+        //    "taskName": "buildAll",
+        //    "problemMatcher": "$tsc"
+        //},
+        {
+            "taskName": "watch",
+            "problemMatcher": "$tsc"
+        }
+    ]
+}

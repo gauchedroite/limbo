@@ -1,0 +1,14 @@
+{
+  "name": "limbo",
+  "version": "0.1.0",
+  "description": "Interactive adventure game dev in TypeScript on nodejs",
+  "keywords": [
+    "game"
+  ],
+  "author": "Christian Trépanier",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gauchedroite/limbo.git"
+  }
+}

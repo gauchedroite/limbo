@@ -1,0 +1,28 @@
+{
+  "name": "limbo-server",
+  "version": "0.1.0",
+  "description": "Plain Node Express server serving static content from the public folder",
+  "main": "server.js",
+  "author": "Christian Trépanier",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gauchedroite/limbo.git"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.5.2",
+    "express": "^4.10.6",
+    "path": "^0.4.9"
+  },
+  "devDependencies": {
+    "chai": "^3.3.0",
+    "gulp": "^3.9.0",
+    "gulp-mocha": "^2.1.3",
+    "gulp-tsb": "^1.6.2",
+    "mocha": "^2.3.3",
+    "orchestrator": "^0.3.7"
+  }
+}
