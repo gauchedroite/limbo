@@ -1,4 +1,4 @@
-/// <reference path="typings/node/node.d.ts" />
+/// <reference path="typings/tsd.d.ts" />
 
 var gulp = require("gulp");
 var mocha = require("gulp-mocha");
@@ -9,7 +9,7 @@ var tsConfigSrc = tsb.create("tsconfig.json");
 
 // TypeScript build for /, pipes in .d.ts files from typings folder 
 gulp.task("buildServer", function () {
-    return gulp.src(["typings/**/*.ts", "server.ts"])
+    return gulp.src(["typings/**/*.ts", "*.ts"])
         .pipe(tsConfigSrc())
         .pipe(gulp.dest("./"));
 });
@@ -40,7 +40,7 @@ gulp.task("test", function () {
 // Watch for any TypeScript file changes
 // if a file change is detected, run the TypeScript compile gulp tasks
 gulp.task("watch", function () {
-    gulp.watch("server.ts", ["buildServer"]);
+    gulp.watch("*.ts", ["buildServer"]);
     gulp.watch("src/**/*.ts", ["buildSrc"]);
     gulp.watch("tests/**/*.ts", ["buildTests"]);
 });

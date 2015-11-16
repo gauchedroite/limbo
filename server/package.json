@@ -10,11 +10,14 @@
     "url": "git://github.com/gauchedroite/limbo.git"
   },
   "scripts": {
-    "start": "node server.js"
+    "postinstall": "tsd reinstall -so",
+    "serve": "supervisor server.js"
   },
   "dependencies": {
+    "body-parser": "^1.14.1",
     "cors": "^2.5.2",
     "express": "^4.10.6",
+    "mongodb": "^2.0.48",
     "path": "^0.4.9"
   },
   "devDependencies": {

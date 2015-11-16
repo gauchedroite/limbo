@@ -1,13 +1,17 @@
+/// <reference path="typings/tsd.d.ts" />
 
-var express = require("express");
-var app = express();
+import * as express from "express";
 var cors = require("cors");
-var path = require("path");
+var api = require("./api");
+
 var port = process.env.port || 1337;
+var app = express();
 
 app.use(cors());
 app.use(express.static("../public"));
+app.use("/editor", express.static("../editor"));
+app.use("/api", api);
 
-app.listen(port);
-
-console.log("listening on port " + port);
+app.listen(port, function() {
+    console.log("Express server listening on port " + port);
+});

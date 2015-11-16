@@ -1,5 +1,7 @@
 node_modules/
 typings/
-src/*.js
-tests/*.js
+private.*
 *.map
+*.js
+
+!gulpfile.js
