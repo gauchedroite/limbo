@@ -11,7 +11,8 @@
   },
   "scripts": {
     "postinstall": "tsd reinstall -so",
-    "serve": "supervisor server.js"
+    "hot": "supervisor server.js",
+    "server": "node server.js"
   },
   "dependencies": {
     "body-parser": "^1.14.1",

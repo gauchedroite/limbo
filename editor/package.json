@@ -1,12 +1,27 @@
 {
-  "name": "limbo-editor",
-  "version": "0.1.0",
-  "description": "Game editor",
-  "main": "index.html",
-  "author": "Christian Trépanier",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/gauchedroite/limbo.git"
-  }
+    "name": "limbo-editor",
+    "version": "0.1.0",
+    "description": "Game editor",
+    "main": "index.html",
+    "author": "Christian Trépanier",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/gauchedroite/limbo.git"
+    },
+    "scripts": {
+        "dev": "set NODE_ENV=dev&& webpack --progress --colors",
+        "prod": "set NODE_ENV=prod&& webpack --progress --colors -p",
+        "watch": "set NODE_ENV=watch&& webpack --progress --colors --watch",
+        "hot": "set NODE_ENV=hot&& webpack-dev-server --progress --colors --hot"
+    },
+    "dependencies": {
+        "jquery": "^2.1.4"
+    },
+    "devDependencies": {
+        "ts-loader": "^0.7.1",
+        "typescript": "^1.6.2",
+        "webpack": "^1.12.6",
+        "webpack-dev-server": "^1.12.1"
+    }
 }
