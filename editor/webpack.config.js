@@ -9,7 +9,7 @@ var options = {
     cache: true,
     entry: {
         app: ["./app"],
-        vendors: ["jquery"]
+        vendors: ["react", "react-dom"]
     },
     output: {
         path: "./build",
@@ -17,7 +17,7 @@ var options = {
     },
     devtool: "source-map",
     resolve: {
-        extensions: ["", ".webpack.js", ".web.js", ".ts", ".js"]
+        extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin("vendors", "vendors.js")
@@ -25,7 +25,8 @@ var options = {
     module: {
         loaders: [
             { test: /\.ts$/, loader: "ts-loader"},
-            { test: /\.css$/, loaders: ["style-loader", "css-loader" /*doesn"t work:"autoprefixer-loader?browsers=last 2 version"*/] }
+            { test: /\.tsx$/, loader: "ts-loader"},
+            { test: /\.css$/, loaders: ["style-loader", "css-loader"] }
         ]
     }
 };

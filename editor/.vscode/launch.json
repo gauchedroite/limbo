@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // Unfortunately this is not ready for prime time yet.
+            // It could be me I can't get the breakpoints in Code to get hit...
+            "name": "Launch limbo editor",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:1337/editor/index.html"
+        }
+    ]
+}

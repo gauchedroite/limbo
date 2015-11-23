@@ -51,7 +51,6 @@
         {
             "name": "Attach to running instance",
             "type": "node",
-            "address": "localhost",
             "port": 5858,
             "sourceMaps": false
         }
