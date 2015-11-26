@@ -4,6 +4,8 @@
     "files.exclude": {
         "**/.git": true,
         "**/*.js.map": true,
-        "**/*.js": { "when": "$(basename).ts" }
+        "**/*.js": { "when": "$(basename).ts" },
+        "app/*.js": { "when": "$(basename).tsx" },
+        "app.js": { "when": "$(basename).tsx" }
     }
 }

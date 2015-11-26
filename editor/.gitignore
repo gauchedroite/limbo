@@ -1,2 +1,6 @@
 build/
 *.map
+*.js
+
+!freezer/*.js
+!webpack.config.js
