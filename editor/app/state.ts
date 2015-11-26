@@ -6,7 +6,7 @@ var freezer = new Freezer({
     a: {x: 1, y: 2, z: [0, 1, 2] },
     b: [ 5, 6, 7 , { m: 1, n: 2 } ],
     c: 'Hola',
-    d: null // It is possible to store whatever
+    d: null
 }, {});
 
 // Let's get the frozen data stored
