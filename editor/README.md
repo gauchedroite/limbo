@@ -9,7 +9,7 @@ npm install -g tsd
 npm install -g webpack
 ```
 
-For some reason under Windows `webpack` needs to be installed twice to get over the errors produced the first time around. 
+For some reason under Windows `webpack` sometimes needs to be installed twice to get over the errors produced the first time around. 
 I'm sure there's a foot long explanation for that but, whatever...
 
 Installation

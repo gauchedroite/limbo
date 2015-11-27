@@ -1,40 +1,25 @@
 
 import React = require("react");
 import ReactDom = require("react-dom");
-import State from "./state";
+import State = require( "./state");
+import "./reactions";
 
-/*
-class HelloProps {
-    public name: string;
-}
-export default class EditorApp extends React.Component<HelloProps, any> {
-    constructor(props: HelloProps) {
-        super(props);
-    }
-    render() {
-        return (
-            <div>Hello {this.props.name}!</div>
-        );
-    }
-}
-//import Api from "./api";
-var api = new Api("http://localhost:1337/api");
-api.fetch("/scenes/0", function(data: any) {
-    render(data);
-});
-*/
 
-var yellow = "Hello VOID";
-var aaa = State();
-console.log(aaa);
+State.trigger("scene:fetch", 0);
 
 export default class EditorApp extends React.Component<any, any> {
     constructor() {
         super();
     }
+    componentDidMount() {
+        State.on("update", () => {
+            this.forceUpdate();
+        });
+    }
     render() {
+        var state = State.get();
         return (
-            <div>{yellow}</div>
+            <div>De bonne humeur et {state.status}</div>
         );
     }
 }

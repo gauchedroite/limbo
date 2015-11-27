@@ -21,7 +21,7 @@ Installation
 npm install
 ```
 
-Note that `tsd reinstall -so` will also be run as part of `npm install`.`tsd` will install all the required TypeScript definition files for the libraries in `typings`. 
+Note that `tsd reinstall -so` will also be run as part of `npm install`.`tsd` to install all the required TypeScript definition files for the libraries in `typings`. 
 It will also create `typings\tsd.d.ts` that can be included in TypeScript files.
 
 Development

@@ -1,5 +1,5 @@
 # limbo
-Interactive adventure game. TypeScript, node.
+Interactive adventure game. TypeScript, node, mongodb, freezer-js.
 
 Installation
 ---
