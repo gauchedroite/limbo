@@ -24,9 +24,9 @@ var options = {
     ],
     module: {
         loaders: [
-            { test: /\.ts$/, loader: "ts-loader"},
-            { test: /\.tsx$/, loader: "ts-loader"},
-            { test: /\.css$/, loaders: ["style-loader", "css-loader"] }
+            { test: /\.ts$/, loader: "ts-loader" },
+            { test: /\.tsx$/, loader: "ts-loader" },
+            { test: /\.less$/, loader: "style!css!less" }
         ]
     }
 };
