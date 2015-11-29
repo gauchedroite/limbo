@@ -2,9 +2,11 @@
 import React = require("react");
 import ContentEditable from "../components/react-contenteditable";
 import State = require( "./state");
+import { IProps, IState, IScene } from "./i-state";
 import "./reactions";
 
-export class Actor extends React.Component<any, any> {
+
+export class Actor extends React.Component<IProps, any> {
     render() {
         return (
             <h1>A C T O R</h1>
@@ -12,7 +14,7 @@ export class Actor extends React.Component<any, any> {
     }
 }
 
-export class Location extends React.Component<any, any> {
+export class Location extends React.Component<IProps, any> {
     render() {
         return (
             <h1>L O C A T I O N</h1>
@@ -20,7 +22,7 @@ export class Location extends React.Component<any, any> {
     }
 }
 
-export class Scene extends React.Component<any, any> {
+export class Scene extends React.Component<IProps, any> {
     constructor() {
         super();
         this.handleChange = this.handleChange.bind(this);
@@ -30,10 +32,8 @@ export class Scene extends React.Component<any, any> {
         State.trigger("scene:set.heading", evt.target.value);
     }
     
-    shouldComponentUpdate(nextProps: any) {
-        var heading = this.props.appState.scene;
-        var heading2 = nextProps.appState.scene;
-        return (heading != heading2);
+    shouldComponentUpdate(nextProps: IProps) {
+        return (this.props.appState.scene != nextProps.appState.scene);
     }
     
     render() {
