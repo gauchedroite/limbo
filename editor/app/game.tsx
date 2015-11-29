@@ -21,35 +21,30 @@ export class Location extends React.Component<any, any> {
 }
 
 export class Scene extends React.Component<any, any> {
-    fu = () => { this.forceUpdate(); };
-    
     constructor() {
         super();
-        this.state = { html: "chaval" };
-    }
-    
-    componentDidMount() {
-        State.on("update", this.fu);
-        State.trigger("scene:fetch", 0);
-    }
-    
-    componentWillUnmount() {
-        State.off("update", this.fu);
+        this.handleChange = this.handleChange.bind(this);
     }
     
     handleChange(evt: any) {
-        this.setState({ html: evt.target.value });
+        State.trigger("scene:set.heading", evt.target.value);
+    }
+    
+    shouldComponentUpdate(nextProps: any) {
+        var heading = this.props.appState.scene;
+        var heading2 = nextProps.appState.scene;
+        return (heading != heading2);
     }
     
     render() {
-        var state = State.get();
+        var app = this.props.appState;
         return (
             <div>
-                <h1>S C E N E is {state.status}</h1>
+                <h1>S C E N E is { app.status }</h1>
                 <ContentEditable 
-                    html = {this.state.html} 
-                    disabled = {false} 
-                    onChange = {this.handleChange.bind(this)} />
+                    html = { app.scene.heading || "" } 
+                    disabled = { false } 
+                    onChange = { this.handleChange } />
             </div>
         );
     }

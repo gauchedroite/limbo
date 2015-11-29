@@ -2,6 +2,7 @@
 import React = require("react");
 import { Router, Route, Link } from "react-router";
 import { Actor, Location, Scene } from "./game";
+import State = require( "./state");
 
 
 export default class EditorApp extends React.Component<any, any> {
@@ -19,7 +20,12 @@ export default class EditorApp extends React.Component<any, any> {
 }
 
 class Root extends React.Component<any, any> {
+    constructor() {
+        super();
+        State.trigger("scene:fetch", 0);
+    }
     render() {
+        var state = State.get();
         return (
             <div>
                 <nav>
@@ -29,8 +35,14 @@ class Root extends React.Component<any, any> {
                         <li><Link to="/scenes">Scenes</Link></li>
                     </ul>
                 </nav>
-                {this.props.children}
+                { React.cloneElement(this.props.children, {appState: state}) }
             </div>
         );
+    }
+    
+    componentDidMount() {
+        State.on("update", () => {
+            this.forceUpdate();
+        });
     }
 }
