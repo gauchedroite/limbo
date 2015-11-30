@@ -6,6 +6,7 @@
         "**/*.js.map": true,
         "**/*.js": { "when": "$(basename).ts" },
         "app/*.js": { "when": "$(basename).tsx" },
+        "components/*.js": { "when": "$(basename).tsx" },
         "app.js": { "when": "$(basename).tsx" }
     }
 }

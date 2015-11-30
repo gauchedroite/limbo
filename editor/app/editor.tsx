@@ -1,15 +1,18 @@
 
 import React = require("react");
-import { Router, Route, Link } from "react-router";
-import { Actor, Location, Scene } from "./game";
+import { Router, Route, Link, IndexRoute } from "react-router";
+import Scene from "./components/scene";
+import Actor from "./components/actor";
+import Location from "./components/location";
 import State = require( "./state");
-
+import "./reactions";
 
 export default class EditorApp extends React.Component<any, any> {
     render() {
         return (
             <Router>
                 <Route path="/" component={Root}>
+                    <IndexRoute component={Actor} />
                     <Route path="actors" component={Actor} />
                     <Route path="locations" component={Location} />
                     <Route path="scenes" component={Scene} />

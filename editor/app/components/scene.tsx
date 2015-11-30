@@ -1,28 +1,11 @@
 
 import React = require("react");
-import ContentEditable from "../components/react-contenteditable";
-import State = require( "./state");
-import { IProps, IState, IScene } from "./i-state";
-import "./reactions";
+import Suggester from "./suggester";
+import State = require( "../state");
+import { IProps, IState, IScene } from "../i-state";
 
 
-export class Actor extends React.Component<IProps, any> {
-    render() {
-        return (
-            <h1>A C T O R</h1>
-        );
-    }
-}
-
-export class Location extends React.Component<IProps, any> {
-    render() {
-        return (
-            <h1>L O C A T I O N</h1>
-        );
-    }
-}
-
-export class Scene extends React.Component<IProps, any> {
+export default class Scene extends React.Component<IProps, any> {
     constructor() {
         super();
         this.handleChange = this.handleChange.bind(this);
@@ -40,8 +23,8 @@ export class Scene extends React.Component<IProps, any> {
         var app = this.props.appState;
         return (
             <div>
-                <h1>S C E N E is { app.status }</h1>
-                <ContentEditable 
+                <h1>S C E N E IS { app.status }</h1>
+                <Suggester 
                     html = { app.scene.heading || "" } 
                     disabled = { false } 
                     onChange = { this.handleChange } />
