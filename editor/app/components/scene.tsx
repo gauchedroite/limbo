@@ -25,6 +25,7 @@ export default class Scene extends React.Component<IProps, any> {
             <div>
                 <h1>S C E N E IS { app.status }</h1>
                 <Suggester 
+                    style = { { backgroundColor: "yellow" } }
                     html = { app.scene.heading || "" } 
                     disabled = { false } 
                     onChange = { this.handleChange } />

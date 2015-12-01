@@ -1,5 +1,5 @@
 
-import Freezer = require("../freezer/Freezer");
+import Freezer = require("../vendors/freezer/Freezer");
 import Utils = require("./utils");
 import {IState} from "./i-state";
 

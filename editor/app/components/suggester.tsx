@@ -18,7 +18,6 @@ export default class Suggester extends React.Component<any, any> {
                     contentEditable = {!this.props.disabled}
                     dangerouslySetInnerHTML = {{ __html: this.props.html }} >
                 </div>
-                <Suggestion />
                </div>;
     }
 
