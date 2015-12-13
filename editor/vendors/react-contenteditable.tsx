@@ -1,7 +1,7 @@
 import React = require("react");
 import ReactDom = require("react-dom");
 
-export default class ContentEditable extends React.Component<any, any> {
+export default class Suggester extends React.Component<any, any> {
     lastHtml: string;
     
     constructor() {
@@ -11,12 +11,12 @@ export default class ContentEditable extends React.Component<any, any> {
 
     render() {
         return <div
-                {...this.props}
-                onInput = {this.emitChange}
-                onBlur = {this.emitChange}
-                contentEditable = {!this.props.disabled}
-                dangerouslySetInnerHTML = {{ __html: this.props.html }} >
-            </div>;
+                    {...this.props}
+                    onInput = {this.emitChange}
+                    onBlur = {this.emitChange}
+                    contentEditable = {!this.props.disabled}
+                    dangerouslySetInnerHTML = {{ __html: this.props.html }} >
+               </div>;
     }
 
     shouldComponentUpdate(nextProps: any) {

@@ -10,7 +10,7 @@
 interface HTMLElement2 extends HTMLElement { __hint: string; }
 interface HTMLDivElement2 extends HTMLDivElement { __hint: string; }
 
-function completely(container: HTMLElement, config: any) {
+export default function completely(container: HTMLElement, config?: any) {
     config = config || {};
     config.fontSize =                       config.fontSize || '16px';
     config.fontFamily =                     config.fontFamily || 'sans-serif';
@@ -103,23 +103,23 @@ function completely(container: HTMLElement, config: any) {
     dropDown.style.overflowY = 'scroll';  // note: this might be ugly when the scrollbar is not required. however in this way the width of the dropDown takes into account
     
     
-    var createDropDownController = function(elem: HTMLElement) {
+    var createDropDownController = function(dropdown: HTMLElement) {
         var rows = new Array<HTMLDivElement2>();
         var ix = 0;
         var oldIndex = -1;
 
         var onMouseOver = function() { this.style.outline = '1px solid #ddd'; }
         var onMouseOut = function() { this.style.outline = '0'; }
-        var onMouseDown = function() { p.hide(); p.onmouseselection(this.__hint); }
+        var onMouseDown = function() { controller.hide(); controller.onmouseselection(this.__hint); }
 
-        var p = {
-            hide: function() { elem.style.visibility = 'hidden'; },
+        var controller = {
+            hide: function() { dropdown.style.visibility = 'hidden'; },
             refresh: function(token: string, array: string[]) {
-                elem.style.visibility = 'hidden';
+                dropdown.style.visibility = 'hidden';
                 ix = 0;
-                elem.innerHTML = '';
+                dropdown.innerHTML = '';
                 var vph = (window.innerHeight || document.documentElement.clientHeight);
-                var rect = (<HTMLElement>elem.parentNode).getBoundingClientRect();
+                var rect = (<HTMLElement>dropdown.parentNode).getBoundingClientRect();
                 var distanceToTop = rect.top - 6;              // heuristic give 6px 
                 var distanceToBottom = vph - rect.bottom - 6;  // distance from the browser border.
                 
@@ -134,7 +134,7 @@ function completely(container: HTMLElement, config: any) {
                     divRow.__hint = array[i];
                     divRow.innerHTML = token + '<b>' + array[i].substring(token.length) + '</b>';
                     rows.push(divRow);
-                    elem.appendChild(divRow);
+                    dropdown.appendChild(divRow);
                 }
                 if (rows.length === 0) {
                     return; // nothing to show.
@@ -144,18 +144,18 @@ function completely(container: HTMLElement, config: any) {
                 }
 
                 if (rows.length < 2) return;
-                p.highlight(0);
+                controller.highlight(0);
 
                 if (distanceToTop > distanceToBottom * 3) {         // Heuristic (only when the distance to the to top is 4 times more than distance to the bottom
-                    elem.style.maxHeight = distanceToTop + 'px';    // we display the dropDown on the top of the input text
-                    elem.style.top = '';
-                    elem.style.bottom = '100%';
+                    dropdown.style.maxHeight = distanceToTop + 'px';    // we display the dropDown on the top of the input text
+                    dropdown.style.top = '';
+                    dropdown.style.bottom = '100%';
                 } else {
-                    elem.style.top = '100%';
-                    elem.style.bottom = '';
-                    elem.style.maxHeight = distanceToBottom + 'px';
+                    dropdown.style.top = '100%';
+                    dropdown.style.bottom = '';
+                    dropdown.style.maxHeight = distanceToBottom + 'px';
                 }
-                elem.style.visibility = 'visible';
+                dropdown.style.visibility = 'visible';
             },
             highlight: function(index: number) {
                 if (oldIndex != -1 && rows[oldIndex]) {
@@ -165,15 +165,15 @@ function completely(container: HTMLElement, config: any) {
                 oldIndex = index;
             },
             move: function(step: number) { // moves the selection either up or down (unless it's not possible) step is either +1 or -1.
-                if (elem.style.visibility === 'hidden') return ''; // nothing to move if there is no dropDown. (this happens if the user hits escape and then down or up)
+                if (dropdown.style.visibility === 'hidden') return ''; // nothing to move if there is no dropDown. (this happens if the user hits escape and then down or up)
                 if (ix + step === -1 || ix + step === rows.length) return rows[ix].__hint; // NO CIRCULAR SCROLLING. 
                 ix += step;
-                p.highlight(ix);
+                controller.highlight(ix);
                 return rows[ix].__hint;     //txtShadow.value = uRows[uIndex].__hint ;
             },
             onmouseselection: function(text: string) { } // it will be overwritten. 
         };
-        return p;
+        return controller;
     }
 
     var dropDownController = createDropDownController(dropDown);
@@ -188,9 +188,11 @@ function completely(container: HTMLElement, config: any) {
     wrapper.appendChild(dropDown);
     container.appendChild(wrapper);
 
+
+
+
     var spacer: HTMLSpanElement;
     var leftSide: string; // <-- it will contain the leftSide part of the textfield (the bit that was already autocompleted)
-    
     
     function calculateWidthForText(text: string) {
         if (spacer === undefined) { // on first call only.

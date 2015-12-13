@@ -1,6 +1,6 @@
 
 import React = require("react");
-import Suggester from "./suggester";
+import Suggester from "../../vendors/react-contenteditable";
 import State = require( "../state");
 import { IProps, IState, IScene } from "../i-state";
 

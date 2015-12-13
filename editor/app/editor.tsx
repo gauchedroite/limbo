@@ -4,8 +4,10 @@ import { Router, Route, Link, IndexRoute } from "react-router";
 import Scene from "./components/scene";
 import Actor from "./components/actor";
 import Location from "./components/location";
+import Tester from "./components/tester";
 import State = require( "./state");
-import "./reactions";
+//import "./reactions";
+
 
 export default class EditorApp extends React.Component<any, any> {
     render() {
@@ -13,6 +15,7 @@ export default class EditorApp extends React.Component<any, any> {
             <Router>
                 <Route path="/" component={Root}>
                     <IndexRoute component={Actor} />
+                    <Route path="tests" component={Tester} />
                     <Route path="actors" component={Actor} />
                     <Route path="locations" component={Location} />
                     <Route path="scenes" component={Scene} />
@@ -33,6 +36,7 @@ class Root extends React.Component<any, any> {
             <div>
                 <nav>
                     <ul>
+                        <li><Link to="/tests">Tester</Link></li>
                         <li><Link to="/actors">Actors</Link></li>
                         <li><Link to="/locations">Locations</Link></li>
                         <li><Link to="/scenes">Scenes</Link></li>
