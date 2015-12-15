@@ -58,4 +58,12 @@ export default class Scanner {
         }
         return false;
     }
+    skipToNextLine() {
+        var ix = this.script.indexOf("\n");
+        if (ix > 0) {
+            this.script = this.script.substr(ix + 1);
+            this.op = "";
+            this.nextSymbol();
+        }
+    }
 }

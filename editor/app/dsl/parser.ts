@@ -1,9 +1,6 @@
 import Scanner from "./scanner";
-import AstNode from "./ast";
 
 export default class Parser {
-    ast = new AstNode("scene");
-    
     constructor(private scanner: Scanner) {
         scanner.separators = (op: string): Array<string> => {
             var seps = [" ", ",", "=", "\n"];
@@ -17,186 +14,237 @@ export default class Parser {
         };
     }
     parse = () => {
+        var node = {};
         this.scanner.nextSymbol();
-        this.parse_scene();
+        this.parse_scene(node);
         this.scanner.accept("");
+        console.log(JSON.stringify(node));
     };
-    parse_scene = () => {
-        this.parse_location();
-        this.parse_when();
-        this.parse_then();
-        this.parse_remember();
-        this.parse_timeout();
-        this.parse_body_csv();
+    parse_scene = (node: any) => {
+        this.parse_scene_main(node);
+        this.parse_extra(node);
+        this.parse_body_csv(node);
     };
-    parse_location = (): any => {
+    parse_scene_main = (node: any) => {
+        node.main = {};
+        this.parse_location(node.main);
+        this.parse_when(node.main);
+    }
+    parse_extra = (node: any) => {
+        node.extra = {};
+        var found = false;
+        do {
+            found = (this.parse_then(node.extra) != null);
+            found = found || (this.parse_remember(node.extra) != null);
+            found = found || (this.parse_timeout(node.extra) != null);
+        } while (found);
+    }
+    parse_location = (node: any): any => {
         if (this.scanner.accept(".location")) {
-            var location: any = { type: "location" };
+            var location: any = {};
             location.text = this.scanner.symbol;
             this.scanner.nextSymbol();
             if (this.scanner.accept("/")) {
                 location.key = this.scanner.symbol;
                 this.scanner.nextSymbol();
             }
-            console.log(location);
-            return location;
+            return node.location = location;
         }
-        console.log("**LOCATION IS MANDATORY");
-        this.scanner.nextSymbol();
+        node.location = "Location: mandatory";
         return null;
     };
-    parse_when = () => {
+    parse_when = (node: any) => {
         if (this.scanner.accept(".when")) {
-            var when: any = { type: "when", conditions: [] };
+            var when: any = [];
             do {
-                when.conditions.push(this.scanner.symbol);
+                when.push(this.scanner.symbol);
                 this.scanner.nextSymbol();
             } while (this.scanner.accept(","));
-            console.log(when);
-            return when;
+            return node.when = when;
         }
         return null;
     };
-    parse_then = (): any => {
+    parse_then = (node: any): any => {
         if (this.scanner.accept(".then")) {
-            var then: any = { type: "then" };
+            var then: any = {};
             then.character = this.scanner.symbol;
             then.concept = this.scanner.nextSymbol();
             this.scanner.nextSymbol();
-            console.log(then);
-            return then;
+            return node.then = then;
         }
         return null;
     }
-    parse_remember = (): any => {
+    parse_remember = (node: any): any => {
         if (this.scanner.accept(".remember")) {
-            var remember: any = { type: "remember" };
+            var remember: any = {};
             remember.key = this.scanner.symbol;
             this.scanner.nextSymbol();
             if (this.scanner.accept("=")) {
                 remember.value = this.scanner.symbol;
                 this.scanner.nextSymbol();
-                console.log(remember);
-                return remember;
+                return node.remember = remember;
             } else {
-                console.log("**invalid REMEMBER");
-                this.scanner.nextSymbol();
+                node.remember = "Remember: invalid syntax";
+                this.scanner.skipToNextLine();
+                return null;
             }
         }
         return null;
     }
-    parse_timeout = (): any => {
+    parse_timeout = (node: any): any => {
         if (this.scanner.accept(".timeout")) {
-            var timeout: any = { type: "timeout" };
-            timeout.value = this.scanner.symbol;
+            var timeout = this.scanner.symbol;
             this.scanner.nextSymbol();
-            console.log(timeout);
-            return timeout;
+            return node.timeout = timeout;
         }
-        return null;;;
+        return null;
     }
-    parse_body_csv  = () => {
+    parse_body_csv = (node: any) => {
+        node.body = [];
         do {
-            this.parse_when(/*"optional"*/);
-            this.parse_body_do();
+            var step = {};
+            node.body.push(step);
+            this.parse_when(step);
+            this.parse_body_do(step);
         } while (this.scanner.symbol != null)
     }
-    parse_body_do = () => {
-        if (this.parse_action() != null)
-            return;
-        if (this.parse_character() != null) {
-            if (this.scanner.accept(".question-mark")) {
-                this.parse_query();
+    parse_body_do = (node: any) => {
+        var action = this.parse_action({});
+        if (action != null) {
+            node.action = action;
+            return action;
+        }
+        if (this.scanner.accept(".question")) {
+            node.question = {};
+            var character = this.parse_character({});
+            if (character != null) {
+                node.question.character = character;
+                var ask = this.parse_line({});
+                if (ask != null) {
+                    node.question.ask = ask;
+                    node.question.choices = [];
+                    this.parse_query(node.question.choices);
+                    return node.question;
+                } else {
+                    node.err = "Query needs a question";
+                    this.scanner.nextSymbol();
+                    return null;
+                }
             } else {
-                this.parse_dialog();
+                node.err = "Missing character (question)";
+                this.scanner.nextSymbol();
+                return null;
             }
-            return;
+        } else if (this.scanner.accept(".random")) {
+            node.random = {};
+            var character = this.parse_character({});
+            if (character != null) {
+                node.random.character = character;
+                node.random.lines = [];
+                this.parse_dialog(node.random.lines);
+                return node.random;
+            } else {
+                node.err = "Missing character (random)";
+                this.scanner.nextSymbol();
+                return null;
+            }
+        } else {
+            node.dialog = {};
+            var character = this.parse_character({});
+            if (character != null) {
+                node.dialog.character = character;
+                var line = this.parse_line({});
+                return node.dialog.line = line;
+            } else {
+                node.err = "Missing character (dialog)";
+                this.scanner.nextSymbol();
+                return null;
+            }
         }
-        console.log("**invalid BODY");
-        this.scanner.nextSymbol();
     }
-    parse_action = (): any => {
-        var line = this.parse_line();
-        this.parse_style();
-        return line;
-    }    
-    parse_dialog = () => {
-        if (this.parse_dialog_line() != null) {
-            while (this.parse_dialog_line() != null) {}
-        }
-        else {
-            console.log("**NEEDS AT LEAST ONE DIALOG LINE");
-            this.scanner.nextSymbol();
-        }
-    }
-    parse_dialog_line = (): any => {
-        if (this.parse_line() != null) {
-            this.parse_odds();
-            this.parse_then();
-            this.parse_remember();
-            return true;
+    parse_action = (node: any): any => {
+        var line = this.parse_line({});
+        if (line != null) {
+            node.text = line;
+            this.parse_style(node);
+            return node;
         }
         return null;
     }
-    parse_odds = (): any => {
+    parse_dialog = (node: any) => {
+        var line = this.parse_dialog_line({});
+        if (line != null) {
+            node.push(line);
+            do {
+                var line = this.parse_dialog_line({});
+                if (line == null)
+                    break;
+                node.push(line);
+            } while (true);
+        } else {
+            node.err = "Needs at least one dialog line";
+            this.scanner.nextSymbol();
+        }
+    }
+    parse_dialog_line = (node: any): any => {
+        if (this.parse_line(node) != null) {
+            this.parse_odds(node);
+            this.parse_then(node);
+            this.parse_remember(node);
+            return node;
+        }
+        return null;
+    }
+    parse_odds = (node: any): any => {
         if (this.scanner.accept(".odds")) {
-            var odds: any = { type: "odds" };
-            odds.text = this.scanner.symbol;
+            var odds = this.scanner.symbol;
             this.scanner.nextSymbol();
-            console.log(odds);
-            return true;
+            return node.odds = odds;
         }
         return null;
     }
-    parse_query = () => {
-        if (this.parse_line() != null) {
-            while (this.parse_query_line() != null) {}
-        }
-        else {
-            console.log("**QUERY NEEDS A QUESTION");
-            this.scanner.nextSymbol();
-        }
+    parse_query = (node: any) => {
+        do {
+            var line = this.parse_query_line({});
+            if (line == null)
+                break;
+            node.push(line);
+        } while (true);
     }
-    parse_query_line = (): any => {
-        if (this.parse_line() != null) {
-            this.parse_default();
-            this.parse_then();
-            this.parse_remember();
-            return true;
+    parse_query_line = (node: any): any => {
+        if (this.parse_line(node) != null) {
+            this.parse_default(node);
+            this.parse_then(node);
+            this.parse_remember(node);
+            return node;
         }
         return null;
     }
-    parse_default = (): any => {
+    parse_default = (node: any): any => {
         if (this.scanner.accept(".default")) {
-            var def: any = { type: "default" };
-            console.log(def);
-            return def;
+            return node.def = true;
         }
         return null;
     }
-    parse_line = (): any => {
+    parse_line = (node: any): any => {
         if (this.scanner.accept(".line")) {
-            var line: any = { type: "line" };
-            line.text = this.scanner.symbol;
+            var line = this.scanner.symbol;
             this.scanner.nextSymbol();
-            console.log(line);
-            return line;
+            return node.line = line;
         }
         return null;
     }
-    parse_style = (): any => {
+    parse_style = (node: any): any => {
         if (this.scanner.accept(".style")) {
-            var style: any = { type: "style" };
-            style.text = this.scanner.symbol;
+            var style = this.scanner.symbol;
             this.scanner.nextSymbol();
-            console.log(style);
-            return style;
+            return node.style = style;
         }
         return null;
     }
-    parse_character = (): any => {
+    parse_character = (node: any): any => {
         if (this.scanner.accept(".character")) {
-            var character: any = { type: "character"};
+            var character: any = {};
             character.actor = this.scanner.symbol;
             this.scanner.nextSymbol();
             if (this.scanner.accept("/")) {
@@ -207,8 +255,7 @@ export default class Parser {
                 character.parenthetical = this.scanner.symbol;
                 this.scanner.nextSymbol();
             }
-            console.log(character);
-            return character;
+            return node.character = character;
         }
         return null;
     }
