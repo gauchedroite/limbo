@@ -13,12 +13,13 @@ export default class Parser {
             return seps;
         };
     }
-    parse = () => {
+    parse = (): any => {
         var node = {};
         this.scanner.nextSymbol();
         this.parse_scene(node);
         this.scanner.accept("");
-        console.log(JSON.stringify(node));
+        //console.log(JSON.stringify(node));
+        return node;
     };
     parse_scene = (node: any) => {
         this.parse_scene_main(node);
