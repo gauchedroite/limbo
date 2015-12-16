@@ -1,10 +1,10 @@
 
 import React = require("react");
 import { Router, Route, Link, IndexRoute } from "react-router";
+import SceneList from "./components/scene-list";
+import ActorList from "./components/actor-list";
+import LocationList from "./components/location-list";
 import Scene from "./components/scene";
-import Actor from "./components/actor";
-import Location from "./components/location";
-import Tester from "./components/tester";
 import State = require( "./state");
 //import "./reactions";
 
@@ -14,11 +14,11 @@ export default class EditorApp extends React.Component<any, any> {
         return (
             <Router>
                 <Route path="/" component={Root}>
-                    <IndexRoute component={Actor} />
-                    <Route path="tests" component={Tester} />
-                    <Route path="actors" component={Actor} />
-                    <Route path="locations" component={Location} />
-                    <Route path="scenes" component={Scene} />
+                    <IndexRoute component={ActorList} />
+                    <Route path="edit-scene" component={Scene} />
+                    <Route path="actors" component={ActorList} />
+                    <Route path="locations" component={LocationList} />
+                    <Route path="scenes" component={SceneList} />
                 </Route>
             </Router>
         );
@@ -36,7 +36,7 @@ class Root extends React.Component<any, any> {
             <div>
                 <nav>
                     <ul>
-                        <li><Link to="/tests">Tester</Link></li>
+                        <li><Link to="/edit-scene">Scene</Link></li>
                         <li><Link to="/actors">Actors</Link></li>
                         <li><Link to="/locations">Locations</Link></li>
                         <li><Link to="/scenes">Scenes</Link></li>

@@ -13,8 +13,8 @@ import { IProps, IState, IScene } from "../i-state";
 // }
 
 // Stateless functional component. Has no lifecycle methods.
-var Actor = (props: IProps) => {
+var ActorList = (props: IProps) => {
     return <h1>ACTOR</h1>;
 };
 
-export default Actor;
+export default ActorList;

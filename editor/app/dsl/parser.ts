@@ -8,7 +8,7 @@ export default class Parser {
                 seps = ["/", "\n"];
             else if (op == ".character")
                 seps = ["/", "\n"];
-            else if (op == ".line")
+            else if (op == ".line" || op == ".parenthetical")
                 seps = ["\n"];
             return seps;
         };

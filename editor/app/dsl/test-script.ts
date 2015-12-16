@@ -46,7 +46,7 @@ Texte affiché dans une boite aussi.
 //  dialog:
 //      character:
 //      line:
-.character 0:JACK
+.character 0:JACK/jack-o-jack
 Il était une fois dans l'ouest. Une ou plusieurs phrases. Un seul paragraphe.
 
 //[4]
