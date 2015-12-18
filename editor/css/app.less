@@ -52,17 +52,59 @@ nav {
 
 .scene-render {
     font-family: Courier New, Courier, monospace;
+    width: 13cm;
+    margin: 1cm;
+    
+    em {
+        font-weight: bold;
+    }
+    strong {
+        font-weight: bold;
+        background-color: whitesmoke;
+    }
 }
-
-.ed-when {
-    background-color: lime;
+.ed-error {
+    background-color: indianred;
 }
 .ed-location {
-    background-color: yellow;
+    font-weight: bold;
 }
 .ed-text {
-    background-color: lightsalmon;
 }
-.ed-dialog {
-    background-color: lightgrey;
+.ed-when, .ed-then, .ed-remember, .ed-timeout,
+.ed-def, .ed-odds, .ed-style {
+    color: #d0d0d0;
+    font-size: 80%;
+    font-weight: normal;
+    line-height: 95%;
+}
+.ed-character {
+    margin-left: 5.5cm;
+}
+.ed-mood {
+    .ed-when;
+    margin-left: 0.2cm;
+}
+.ed-parenthetical {
+    margin-left: -1.5cm;
+}
+.ed-dialog, .ed-random, .ed-question, .ed-action {
+    margin: 0.45cm 0;
+}
+.ed-dialog-line {
+    margin: 0 3cm;
+}
+.ed-ask {
+    margin: 0 3cm 0.45cm 3cm;
+}
+.ed-random-line, .ed-choice-line {
+    margin: 0 3cm 0.45cm 0.05cm;
+}
+.ed-random-lines, .ed-choice-lines {
+    border-left: solid 0.2cm #f8f8f8;
+    margin-left: 2.75cm;
+}
+
+.my-standout {
+    background-color: rgba(255, 255, 0, 0.25);
 }
