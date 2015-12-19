@@ -53,8 +53,9 @@ class Action extends React.Component<any, any> {
             }
         };
         var doStyle = (style: any) => {
-            if (style)
-                return <span className="ed-style">style {style}</span>;
+            if (style == undefined) return null;
+            if (style.err) return <Error error={style.err} />;
+            return <span className="ed-style">style {style}</span>;
         };
         return <div className="ed-action">
             <When node={node.when} />
@@ -67,9 +68,14 @@ class Action extends React.Component<any, any> {
 class Character extends React.Component<any, any> {
     render() {
         var node = this.props.node;
-        if (node == undefined)
-            return <Error error="Character not found"/>;
+        if (node == undefined) return null;
+        if (node.err) return <Error error={node.err} />;
             
+        var doId = (id: any) => {
+            return null;
+            if (id)
+                return <span className="ed-id">[{id}]</span>;
+        };
         var doMood = (mood: any) => {
             if (mood)
                 return <span className="ed-mood">{mood}</span>;
@@ -79,7 +85,7 @@ class Character extends React.Component<any, any> {
                 return <div className="ed-parenthetical">({parenthetical})</div>;
         };
         return <div className="ed-character">
-            <div>{node.actor}{doMood(node.mood)}</div>
+            <div>{doId(node.id)}{node.actor}{doMood(node.mood)}</div>
             {doParenthetical(node.parenthetical)}
         </div>;
     }
@@ -88,6 +94,7 @@ class Character extends React.Component<any, any> {
 class DialogLine extends React.Component<any, any> {
     render() {
         var line = this.props.node;
+        if (line.err)  return <Error error={line.err} />;
         return <div className="ed-dialog-line">
             {line}
         </div>;
@@ -97,6 +104,8 @@ class DialogLine extends React.Component<any, any> {
 class Dialog extends React.Component<any, any> {
     render() {
         var node = this.props.node;
+        if (node.err) return <Error error={node.err} />;
+        if (node.dialog.err) return <Error error={node.dialog.err} />;
         return <div className="ed-dialog">
             <When node={node.when} />
             <Character node={node.dialog.character} />
@@ -110,8 +119,9 @@ class RandomLine extends React.Component<any, any> {
         var node = this.props.node;
         
         var doOdds = (odds: any) => {
-            if (odds)
-                return <div className="ed-odds">odds {odds}</div>;
+            if (odds == undefined) return null;
+            if (odds.err) return <Error error={odds.err} />;
+            return <div className="ed-odds">odds {odds}</div>;
         };
 
         return <div className="ed-random-line">
@@ -126,6 +136,8 @@ class RandomLine extends React.Component<any, any> {
 class Random extends React.Component<any, any> {
     render() {
         var node = this.props.node;
+        if (node.err) return <Error error={node.err} />;
+        if (node.random.err) return <Error error={node.random.err} />;
         var key = 0;
         return <div className="ed-random">
             <When node={node.when} />
@@ -162,6 +174,7 @@ class ChoiceLine extends React.Component<any, any> {
 class Ask extends React.Component<any, any> {
     render() {
         var ask = this.props.node;
+        if (ask.err) return <Error error={ask.err}/>;
         return <div className="ed-ask">
             {ask}
         </div>;
@@ -172,13 +185,8 @@ class Question extends React.Component<any, any> {
     render() {
         var node = this.props.node;
         var question = node.question;
-        if (question == undefined)
-            return <Error error="Question undefined"/>
-        if (question.ask == undefined)
-            return <Error error="Ask undefined"/>
-        if (question.choices == undefined)
-            return <Error error="Choices undefined"/>
-            
+        if (node.err) return <Error error={node.err}/> 
+        
         var key = 0;
         return <div className="ed-question">
             <When node={node.when} />
@@ -218,35 +226,38 @@ class Body extends React.Component<any, any> {
 class Then extends React.Component<any, any> {
     render() {
         var node = this.props.node;
-        if (node)
-            return <div className="ed-then">then&nbsp;
-                <span>{node.character}</span>&nbsp;
-                <span>{node.concept}</span>
-            </div>;
-        return null;
+        if (node == undefined) return null;
+        if (node.err) return <Error error={node.err} />;
+
+        return <div className="ed-then">then&nbsp;
+            <span>{node.character}</span>&nbsp;
+            <span>{node.concept}</span>
+        </div>;
     }
 }
 
 class Remember extends React.Component<any, any> {
     render() {
         var node = this.props.node;
-        if (node)
-            return <div className="ed-remember">remember&nbsp;
-                <span>{node.key}</span>= 
-                <span>{node.value}</span>
-            </div>;
-        return null;
+        if (node == undefined) return null;
+        if (node.err) return <Error error={node.err} />;
+        
+        return <div className="ed-remember">remember&nbsp;
+            <span>{node.key}</span>= 
+            <span>{node.value}</span>
+        </div>;
     }
 }
 
 class Timeout extends React.Component<any, any> {
     render() {
         var timeout = this.props.timeout;
-        if (timeout)
-            return <div className="ed-timeout">timeout&nbsp;
-                <span>{timeout}</span>
-            </div>;
-        return null;
+        if (timeout == undefined) return null;
+        if (timeout.err) return <Error error={timeout.err} />;
+
+        return <div className="ed-timeout">timeout&nbsp;
+            <span>{timeout}</span>
+        </div>;
     }
 }
 
@@ -262,11 +273,11 @@ class Extra extends React.Component<any, any> {
 }
 
 class When extends React.Component<any, any> {
-    render() {
+    render() {            
         var node = this.props.node;
-        if (node == undefined)
-            return null;
-        
+        if (node == undefined) return null;
+        if (node.err) return <Error error={node.err} />;
+            
         var key = 0;
         return <div className="ed-when">when { node.map((item: string) => {
             return <span key={key++}>{item}&nbsp;</span>;
@@ -276,11 +287,21 @@ class When extends React.Component<any, any> {
 
 class Location extends React.Component<any, any> {
     render() {
-        var location = this.props.node.text;
-        var lockey = this.props.node.key;
+        var node = this.props.node;
+        if (node.err) return <Error error={node.err} />;
+            
+        var location = node.text;
+        var lockey = node.key;
         location = location + (lockey ? "/" + lockey : "");
         
+        var doId = (id: any) => {
+            return null;
+            if (id)
+                return <span className="ed-id">[{id}]</span>;
+        };
+        
         return <div className="ed-location">
+            {doId(node.id)}
             {location}
         </div>;
     }
@@ -289,14 +310,8 @@ class Location extends React.Component<any, any> {
 class Main extends React.Component<any, any> {
     render() {
         var node = this.props.node;
-        
         var location = node.location;
-        if (location == undefined)
-            return <Error error="Location not found"/>;
-
         var when = node.when;
-        if (when == undefined)
-            return <Error error="When not found"/>;
         
         return <div className="ed-main">
             <Location node={location} />

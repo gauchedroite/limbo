@@ -64,7 +64,7 @@ Il était une fois dans l'ouest. Une ou plusieurs phrases. Un seul paragraphe.
 Il était une fois dans l'est.
 La fois où il faisait froid.
     .then 0:JACK concept
-    .remember some_key = value
+    .remember a_key = value
 C'était peut-être le nord au fond...
 
 //[5]
