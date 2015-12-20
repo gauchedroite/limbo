@@ -1,5 +1,19 @@
 import Scanner from "./scanner";
 
+function contains(array: string[], text: string) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i] === text) return true;
+    }
+    return false;
+}
+
+function badArgument(argument: string) {
+    if (argument == undefined) return true;
+    if (argument == null) return true;
+    if (argument.charAt(0) == ".") return true;
+    return false;
+}
+
 export default class Parser {
     constructor(private scanner: Scanner) {
         scanner.separators = (op: string): Array<string> => {
@@ -18,20 +32,23 @@ export default class Parser {
         this.scanner.nextSymbol();
         this.parse_scene(node);
         this.scanner.accept("");
-        //console.log(JSON.stringify(node));
         return node;
     };
     parse_scene = (node: any) => {
-        this.parse_scene_main(node);
+        var main = this.parse_scene_main(node);
+        if (main == null) return;
         this.parse_extra(node);
         this.parse_body_csv(node);
     };
-    parse_scene_main = (node: any) => {
+    parse_scene_main = (node: any): any => {
         node.main = {};
         this.parse_location(node.main);
+        if (node.main.location.err)
+            return null;
         var when = this.parse_when(node.main);
         if (when == null)
             node.main.when = { err: "When is missing" };
+        return node.main;
     }
     parse_extra = (node: any) => {
         node.extra = {};
@@ -49,6 +66,8 @@ export default class Parser {
             location.id = idtext.id;
             location.text = idtext.text;
             this.scanner.nextSymbol();
+            if (location.text == null)
+                return node.location = {err: "Location is not set"};
             if (this.scanner.accept("/")) {
                 location.key = this.scanner.symbol;
                 this.scanner.nextSymbol();
@@ -61,9 +80,8 @@ export default class Parser {
         if (this.scanner.accept(".when")) {
             var when: any = [];
             do {
-                if (this.scanner.symbol.charAt(0) == ".") {
+                if (badArgument(this.scanner.symbol))
                     return node.when = {err: "When: missing condition"};
-                }
                 when.push(this.scanner.symbol);
                 this.scanner.nextSymbol();
             } while (this.scanner.accept(","));
@@ -75,11 +93,11 @@ export default class Parser {
         if (this.scanner.accept(".then")) {
             var then: any = {};
             then.character = this.scanner.symbol;
-            if (then.character.charAt(0) == ".")
+            if (badArgument(then.character))
                 return node.then = {err: "Then: missing character"};
                 
             then.concept = this.scanner.nextSymbol();
-            if (then.concept.charAt(0) == ".")
+            if (badArgument(then.concept))
                 return node.then = {err: "Then: missing concept"};
                 
             this.scanner.nextSymbol();
@@ -91,11 +109,11 @@ export default class Parser {
         if (this.scanner.accept(".remember")) {
             var remember: any = {};
             remember.key = this.scanner.symbol;
-            if (remember.key.charAt(0) == ".")
+            if (badArgument(remember.key))
                 return node.remember = {err: "Remember: missing key"};
             
             this.scanner.nextSymbol();
-            if (this.scanner.symbol.charAt(0) == ".")
+            if (badArgument(this.scanner.symbol))
                 return node.remember = {err: "Remember: missing '='"};
 
             if (this.scanner.accept("=") == false) {
@@ -104,7 +122,7 @@ export default class Parser {
             }
             
             remember.value = this.scanner.symbol;
-            if (this.scanner.symbol.charAt(0) == ".")
+            if (badArgument(this.scanner.symbol))
                 return node.remember = {err: "Remember: missing value"};
             
             this.scanner.nextSymbol();
@@ -115,22 +133,24 @@ export default class Parser {
     parse_timeout = (node: any): any => {
         if (this.scanner.accept(".timeout")) {
             var timeout = this.scanner.symbol;
-            if (timeout.charAt(0) != ".") {
-                this.scanner.nextSymbol();
-                return node.timeout = timeout;
-            }
-            return node.timeout = {err: "Timeout: missing duration"};
+            if (badArgument(timeout))
+                return node.timeout = {err: "Timeout: missing duration"};
+            this.scanner.nextSymbol();
+            return node.timeout = timeout;
         }
         return null;
     }
     parse_body_csv = (node: any) => {
+        var commands = [".when", ".character", ".line", ".random", ".question"];
         node.body = [];
         do {
             var step = {};
             node.body.push(step);
             this.parse_when(step);
             this.parse_body_do(step);
-        } while (this.scanner.symbol != null)
+            if (this.scanner.symbol == null) break;
+            if (this.scanner.symbol.charAt(0) != ".") break;
+        } while (contains(commands, this.scanner.symbol))
     }
     parse_body_do = (node: any) => {
         var action = this.parse_action({});
@@ -181,7 +201,11 @@ export default class Parser {
                 return node.dialog.line = line;
             } else {
                 var symbol = this.scanner.symbol;
-                if (symbol.charAt(0) == ".") {
+                if (symbol == null) {
+                    this.scanner.skipToNextLine();
+                    return null;
+                }
+                if (badArgument(symbol)) {
                     this.scanner.skipToNextLine();
                     return node.dialog = {err: `Invalid command: ${symbol}`};
                 }
@@ -208,7 +232,7 @@ export default class Parser {
         node.push(line);
         do {
             var line = this.parse_dialog_line({});
-            if (line == null)
+            if (line == null || line.err)
                 break;
             node.push(line);
         } while (true);
@@ -225,7 +249,7 @@ export default class Parser {
     parse_odds = (node: any): any => {
         if (this.scanner.accept(".odds")) {
             var odds = this.scanner.symbol;
-            if (odds.charAt(0) == ".")
+            if (badArgument( odds))
                 return node.odds = {err: "Odds: missing value"};
             this.scanner.nextSymbol();
             return node.odds = odds;
@@ -266,11 +290,10 @@ export default class Parser {
     parse_style = (node: any): any => {
         if (this.scanner.accept(".style")) {
             var style = this.scanner.symbol;
-            if (style.charAt(0) != ".") {
-                this.scanner.nextSymbol();
-                return node.style = style;
-            }
-            return node.style = {err: "Style: missing value"};
+            if (badArgument(style))
+                return node.style = {err: "Style: missing value"};
+            this.scanner.nextSymbol();
+            return node.style = style;
         }
     }
     parse_character = (node: any): any => {
@@ -279,7 +302,7 @@ export default class Parser {
             var idtext = this.splitKeys(this.scanner.symbol);
             character.id = idtext.id;
             character.actor = idtext.text;
-            if (character.actor.charAt(0) == ".")
+            if (badArgument(character.actor))
                 return node.character = {err: "Character: missing name"};
             this.scanner.nextSymbol();
             if (this.scanner.accept("/")) {
@@ -295,16 +318,11 @@ export default class Parser {
         return null;
     }
     splitKeys = (symbol: string) => {
+        if (symbol == null) return { id: null, text: null };
+        
         var ix = symbol.indexOf(":");
-        if (ix == -1)
-            return {
-                id: null,
-                text: symbol 
-            };
-        else
-            return {
-                id: symbol.substr(0, ix),
-                text: symbol.substr(ix + 1)
-            };
+        if (ix == -1) return { id: null, text: symbol };
+        
+        return { id: symbol.substr(0, ix), text: symbol.substr(ix + 1) };
     }
 }

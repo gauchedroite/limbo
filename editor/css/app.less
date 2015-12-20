@@ -45,16 +45,29 @@ nav {
     }
 }
 
-.editBox {
-    background-color: yellow;
-    min-height: 200px;
+.scene {
+    //background-color: yellowgreen;
 }
-
-.scene-render {
+.scene-editor-wrapper {
+    width: 13cm;
+    float: left;
+}
+.scene-viewer-wrapper {
+    width: 14cm;
+    margin-left: 13cm;
+}
+.scene-editor {
+    padding: 0.5cm;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    [contenteditable]:focus {
+        outline: 0 solid transparent;
+    }
+}
+.scene-viewer {
     font-family: Courier New, Courier, monospace;
     width: 13cm;
-    margin: 1cm;
-    
+    padding: 1cm;
+    border: 1px solid #e0e0e0;
     em {
         font-weight: bold;
     }
@@ -63,11 +76,14 @@ nav {
         background-color: whitesmoke;
     }
 }
+
 .ed-error {
     background-color: indianred;
 }
 .ed-location {
     font-weight: bold;
+    color: white;
+    background-color: #444;
 }
 .ed-text {
 }

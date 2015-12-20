@@ -1,7 +1,7 @@
 import React = require("react");
 import ReactDom = require("react-dom");
 
-export default class Suggester extends React.Component<any, any> {
+export default class ContentEditable extends React.Component<any, any> {
     lastHtml: string;
     
     constructor() {

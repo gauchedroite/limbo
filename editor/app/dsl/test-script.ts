@@ -19,7 +19,7 @@ export var script = `
 //  timeout:
 .then 0:JACK concept
 .remember some_key = value
-.timeout 4sec
+.timeout >4sec
 
 //
 // body:
